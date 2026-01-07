@@ -3,8 +3,21 @@ Jenkins fastapi run
 Below is a production-grade Jenkins Pipeline example using a Declarative Jenkinsfile.
 It reflects common real-world practices: CI vs CD separation, security scans, Docker image build/push, and Kubernetes deployment.
 
-Example 1: Typical CI/CD Jenkinsfile (Docker + Kubernetes)
-agent (any, label 'docker'),environment (setup environment envirables 
+pipeline
+→ agent : any
+→ environment : APP_NAME=demo-app | IMAGE_TAG=BUILD_NUMBER | DOCKER_CREDS
+→ options : timestamps() | ansiColor('xterm')
+→ stage('Checkout') : git main repo
+→ stage('Lint & Unit Tests') : make lint → make test
+→ stage('SAST & Dependency Scan') : trivy fs
+→ stage('Build Docker Image') : docker build ${IMAGE_FULL}
+→ stage('Docker Image Scan') : trivy image
+→ stage('Push Image') : docker login → docker push
+→ stage('Deploy to Staging') : kubectl set image (staging)
+→ stage('Smoke Tests') : curl /health
+→ stage('Manual Approval') : input confirmation
+→ stage('Deploy to Production') : kubectl set image (production)
+→ post : success | failure | always(cleanWs)
 
 
 Pipeline Flow (High Level)
