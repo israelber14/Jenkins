@@ -18,6 +18,48 @@ pipeline
 → stage('Manual Approval') : input confirmation
 → stage('Deploy to Production') : kubectl set image (production)
 → post : success | failure | always(cleanWs)
+### Jenkins Pipeline Flow
+
+![pipeline](https://img.shields.io/badge/pipeline-start-lightgrey)
+
+![agent](https://img.shields.io/badge/agent-any-blue)
+
+![environment](https://img.shields.io/badge/environment-APP_NAME%20%7C%20IMAGE_TAG%20%7C%20CREDS-yellow)
+
+![options](https://img.shields.io/badge/options-timestamps%20%7C%20ansiColor-purple)
+
+![checkout](https://img.shields.io/badge/stage-Checkout-blue)
+→ git main repo
+
+![test](https://img.shields.io/badge/stage-Lint%20%26%20Unit%20Tests-brightgreen)
+→ make lint → make test
+
+![sast](https://img.shields.io/badge/stage-SAST%20%26%20Dependency%20Scan-red)
+→ trivy fs
+
+![build](https://img.shields.io/badge/stage-Build%20Docker%20Image-orange)
+→ docker build ${IMAGE_FULL}
+
+![scan](https://img.shields.io/badge/stage-Docker%20Image%20Scan-red)
+→ trivy image
+
+![push](https://img.shields.io/badge/stage-Push%20Image-blue)
+→ docker login → docker push
+
+![deploy-stg](https://img.shields.io/badge/stage-Deploy%20to%20Staging-orange)
+→ kubectl set image (staging)
+
+![smoke](https://img.shields.io/badge/stage-Smoke%20Tests-brightgreen)
+→ curl /health
+
+![approval](https://img.shields.io/badge/stage-Manual%20Approval-yellow)
+→ input confirmation
+
+![deploy-prod](https://img.shields.io/badge/stage-Deploy%20to%20Production-red)
+→ kubectl set image (production)
+
+![post](https://img.shields.io/badge/post-success%20%7C%20failure%20%7C%20always-lightgrey)
+→ cleanWs
 
 
 Pipeline Flow (High Level)
